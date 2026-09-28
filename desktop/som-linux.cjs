@@ -16,9 +16,9 @@
 const { app } = require('electron');
 const { execFile, spawn } = require('node:child_process');
 
-const NOME_CAPTURA = 'transmissor_captura';
-const NOME_FONTE = 'transmissor_som';
-const DESCRICAO = 'Som do Transmissor';
+const NOME_CAPTURA = 'peekin_captura';
+const NOME_FONTE = 'peekin_som';
+const DESCRICAO = 'Som do PeekIn';
 const VIGIA_MS = 1000;
 
 let laco = null;        // processo pw-loopback

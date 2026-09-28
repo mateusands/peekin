@@ -1,12 +1,12 @@
 {
-  "name": "transmitir-100mil",
+  "name": "peekin",
   "version": "0.1.0",
   "private": true,
   "description": "Chamada P2P de compartilhamento de tela, com ou sem som, publicada por um tunel temporario do Cloudflare",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mateusands/transmitir-100mil.git"
+    "url": "https://github.com/mateusands/peekin.git"
   },
   "type": "module",
   "main": "desktop/main.cjs",

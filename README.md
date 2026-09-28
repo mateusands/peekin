@@ -1,4 +1,4 @@
-# transmitir-100mil
+# PeekIn
 
 Chamada para compartilhar tela — com ou sem som — direto do navegador. O
 servidor só apresenta a página e repassa a sinalização; o vídeo vai ponto a
@@ -243,7 +243,7 @@ exclusão não corta o áudio de quem está assistindo.
 Para apontar o app para uma sala já publicada por outra pessoa:
 
 ```bash
-TRANSMISSOR_URL=https://algo.trycloudflare.com npm run app
+PEEKIN_URL=https://algo.trycloudflare.com npm run app
 ```
 
 ### O que cada sistema usa

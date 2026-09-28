@@ -54,15 +54,22 @@ function somDe(sid) {
 /** sid em foco (a tela grande), ou null pro mosaico normal */
 let focado = null;
 
-/* A ponte só existe dentro do app de mesa. No navegador `window.transmissor`
+/* A ponte só existe dentro do app de mesa. No navegador `window.peekin`
    não existe, o botão fica escondido e nada disto roda — a página continua a
    mesma nos dois lugares. */
-const ponteSom = window.transmissor?.som || null;
+const ponteSom = window.peekin?.som || null;
 
 pintarIcones(document);
 
 /* ================= entrada ================= */
 
+/* O prefixo das chaves continua `transmissor:` de propósito, mesmo depois de o
+   projeto virar PeekIn. Ele não aparece para ninguém, e renomeá-lo apagaria em
+   silêncio a resolução, o fps, o tipo de conteúdo, os avisos, o nome e as
+   exclusões de som de quem já usa — a pessoa abriria o app e encontraria tudo
+   no padrão, sem erro nenhum na tela para explicar. Se um dia for renomeado,
+   tem que vir com migração: ler a chave antiga, gravar na nova, apagar a
+   velha. */
 $('nome').value = localStorage.getItem('transmissor:nome') || '';
 
 /* Os três campos de qualidade seguem a mesma regra: o valor abre no que a

@@ -1,7 +1,7 @@
 @echo off
 setlocal
 set "CODIGO_SAIDA=0"
-title Transmissor
+title PeekIn
 cd /d "%~dp0"
 
 where node >nul 2>nul
@@ -72,7 +72,7 @@ call :aviso_cloudflared
 echo.
 echo Abrindo a sala numa janela separada, e o app de mesa nesta...
 echo.
-start "Transmissor - sala" cmd /k npm run hospedar
+start "PeekIn - sala" cmd /k npm run hospedar
 call npm run app
 if errorlevel 1 goto falhou
 goto encerrar

@@ -184,6 +184,15 @@ enxergam na fila um do outro.
   e é exatamente o que o **app de mesa** faz — veja a seção abaixo. No
   navegador, descartar continua sendo a única saída honesta.
 
+- **O prefixo `transmissor:` das chaves do `localStorage` não é resíduo — é
+  deliberado.** O projeto virou PeekIn e o prefixo ficou: ele não aparece para
+  ninguém, e renomeá-lo apaga em silêncio a resolução, o fps, o tipo de
+  conteúdo, os avisos, o nome e as exclusões de som de quem já usa. A pessoa
+  abre o app e encontra tudo no padrão, sem erro nenhum para explicar. Renomear
+  só com migração: ler a antiga, gravar na nova, apagar a velha. O mesmo vale
+  para o macro `TRANSMISSOR_TEM_SDK_LOOPBACK` no `sdk-compat.h`, que ficou
+  porque os `.exe` versionados ao lado foram compilados daquela fonte.
+
 ### Codec e qualidade da tela
 
 Tudo aqui foi pago com uma chamada real quebrada: tela preta do outro lado, som
