@@ -26,7 +26,7 @@ app.set('trust proxy', true);
 app.get('/api/ping', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-store');
-  res.json({ ok: true, servidor: 'transmissor' });
+  res.json({ ok: true, servidor: 'peekin' });
 });
 
 /**

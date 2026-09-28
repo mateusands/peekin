@@ -7,8 +7,8 @@ o que está em `public/` é servido exatamente como você escreveu.
 ## Começar
 
 ```bash
-git clone https://github.com/mateusands/transmitir-100mil
-cd transmitir-100mil
+git clone https://github.com/mateusands/peekin
+cd peekin
 npm install
 npm start
 ```

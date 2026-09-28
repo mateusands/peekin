@@ -9,7 +9,7 @@
  * A página em public/ não muda uma linha por causa disto.
  *
  *   npm run app                              abre na sala local
- *   TRANSMISSOR_URL=https://... npm run app  abre num endereço publicado
+ *   PEEKIN_URL=https://... npm run app  abre num endereço publicado
  */
 
 
@@ -37,7 +37,7 @@ const PORTA = Number(process.env.PORT) || 3000;
    `rtc.js`. Nenhuma GPU codifica VP8. */
 app.commandLine.appendSwitch('enable-features', 'AcceleratedVideoEncoder');
 
-const ENDERECO = process.env.TRANSMISSOR_URL || `http://localhost:${PORTA}`;
+const ENDERECO = process.env.PEEKIN_URL || `http://localhost:${PORTA}`;
 
 /**
  * Wayland de verdade, e não só o que as variáveis dizem.
@@ -100,10 +100,10 @@ function portaOcupada(porta) {
 /**
  * Sobe o servidor só se ninguém estiver na porta — assim o app funciona tanto
  * sozinho quanto ao lado de um `npm run hospedar` já rodando, sem brigar por
- * ela. Com TRANSMISSOR_URL o endereço é de outra máquina; aí não há o que subir.
+ * ela. Com PEEKIN_URL o endereço é de outra máquina; aí não há o que subir.
  */
 async function garantirServidor() {
-  if (process.env.TRANSMISSOR_URL) return;
+  if (process.env.PEEKIN_URL) return;
   if (await portaOcupada(PORTA)) return;
   servidor = fork(path.join(RAIZ, 'server', 'index.js'), [], {
     env: { ...process.env, PORT: String(PORTA) },
@@ -208,7 +208,7 @@ function criarJanela() {
     width: 1180,
     height: 780,
     backgroundColor: '#0b0d10',
-    title: 'Transmissor',
+    title: 'PeekIn',
     autoHideMenuBar: true,
     webPreferences: {
       contextIsolation: true,

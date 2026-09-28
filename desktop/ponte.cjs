@@ -3,11 +3,11 @@
  * Superfície mínima de propósito: listar os aplicativos que estão tocando,
  * ligar o som de um deles e desligar. Nada de arquivo, processo ou resto do
  * Electron. A página em public/ funciona sem isto — quando roda no navegador,
- * `window.transmissor` simplesmente não existe e a opção não aparece. */
+ * `window.peekin` simplesmente não existe e a opção não aparece. */
 
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('transmissor', {
+contextBridge.exposeInMainWorld('peekin', {
   som: {
     recursos: () => ipcRenderer.invoke('som:recursos'),
     aplicativos: () => ipcRenderer.invoke('som:aplicativos'),

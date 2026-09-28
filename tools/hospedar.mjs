@@ -118,7 +118,7 @@ process.on('SIGTERM', () => encerrar(0));
 
 /* ================= principal ================= */
 
-console.log(`\n${linha}\n  Transmissor — hospedando\n${linha}\n`);
+console.log(`\n${linha}\n  PeekIn — hospedando\n${linha}\n`);
 
 console.log('  Subindo o servidor…');
 const porta = await subirServidor();

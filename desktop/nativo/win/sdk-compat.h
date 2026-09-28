@@ -25,6 +25,10 @@
 #  define TRANSMISSOR_TEM_SDK_LOOPBACK 1
 #endif
 
+/* O nome antigo do projeto sobrevive neste macro de propósito: os .exe ao lado
+   são versionados e foram compilados desta fonte. Renomear uma guarda de
+   pré-processador invisível deixaria fonte e binário fora de sincronia sem
+   mudar nada no comportamento — some na próxima recompilação. */
 #ifndef TRANSMISSOR_TEM_SDK_LOOPBACK
 
 typedef enum AUDIOCLIENT_ACTIVATION_TYPE

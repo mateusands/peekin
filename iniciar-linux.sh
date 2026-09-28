@@ -8,7 +8,7 @@ arquivo_script="$(readlink -f -- "${BASH_SOURCE[0]}")"
 # Executado pelo gerenciador de arquivos, o script normalmente não recebe um
 # terminal. A alternativa Debian tem preferência; nas outras distribuições
 # procuramos um emulador instalado. A variável evita abrir uma segunda janela.
-if [[ ! -t 0 && "${TRANSMISSOR_EM_TERMINAL:-}" != '1' ]]; then
+if [[ ! -t 0 && "${PEEKIN_EM_TERMINAL:-}" != '1' ]]; then
   for terminal in x-terminal-emulator "${TERMINAL:-}" konsole gnome-terminal xfce4-terminal alacritty kitty foot xterm; do
     [[ -n "$terminal" ]] && command -v "$terminal" >/dev/null 2>&1 || continue
     # GNOME e Xfce precisam de delimitadores próprios para preservar os argumentos.
@@ -17,9 +17,9 @@ if [[ ! -t 0 && "${TRANSMISSOR_EM_TERMINAL:-}" != '1' ]]; then
       xfce4-terminal) separador='--execute' ;;
       *) separador='-e' ;;
     esac
-    exec "$terminal" "$separador" env TRANSMISSOR_EM_TERMINAL=1 "$arquivo_script"
+    exec "$terminal" "$separador" env PEEKIN_EM_TERMINAL=1 "$arquivo_script"
   done
-  mensagem='Não encontrei um terminal para abrir o Transmissor. Instale um terminal ou execute bash iniciar-linux.sh em um terminal existente.'
+  mensagem='Não encontrei um terminal para abrir o PeekIn. Instale um terminal ou execute bash iniciar-linux.sh em um terminal existente.'
   printf '%s\n' "$mensagem" >&2
   # Sem terminal, stderr fica invisível ao abrir pelo gerenciador de arquivos.
   if command -v zenity >/dev/null 2>&1; then
