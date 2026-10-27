@@ -18,18 +18,18 @@ sistema, ou de código nosso.
 ## Requisitos
 
 **Antes de abrir qualquer lançador, instale Node.js 22 ou superior e npm.**
-Eles são obrigatórios para hospedar a sala. **Para gerar um link público e
-convidar outras pessoas pela internet, instale também o `cloudflared`.**
+Eles são obrigatórios para hospedar a sala. **Instale também o `cloudflared`:
+é ele que gera o link público, e sem ele a sala não sobe.**
 As instruções por sistema estão na seção **Instalar**, logo abaixo.
 
 Os lançadores **não instalam Node.js, npm ou `cloudflared` automaticamente**;
 instalam apenas as dependências do projeto na primeira execução. Sem Node.js
-ou npm, a sala não inicia. Sem `cloudflared`, ela inicia em modo local,
-sem link público.
+ou npm, a sala não inicia. Sem `cloudflared`, o lançador para e diz como
+instalar.
 
 - **Node.js 22 ou superior** (só para quem hospeda)
 - **npm** (gerenciador de dependências, normalmente instalado junto com o Node.js)
-- **cloudflared** (só para quem hospeda, e só se for expor pra fora da máquina)
+- **cloudflared** (só para quem hospeda)
 - Um navegador baseado em Chromium — Chrome, Edge, Brave, Vivaldi — para quem
   vai compartilhar tela **com som**. Firefox entra na chamada normalmente, mas
   não manda o áudio da tela.
@@ -105,35 +105,21 @@ juntos, e o endereço morre ali — a próxima execução gera outro.
 **Primeiro, conclua a instalação dos requisitos acima.** Abrir um lançador
 não substitui a instalação de Node.js, npm e, para acesso público, `cloudflared`.
 
-Os lançadores validam Node 22+ e npm e instalam as dependências na primeira
-execução.
+Os lançadores validam Node 22+, npm e `cloudflared` e instalam as dependências
+na primeira execução. Não há menu: o lançador sempre faz a mesma coisa, que é
+o mesmo que `npm run iniciar`:
 
-Ao abrir, o lançador pergunta o que fazer:
+- abre um **terminal**, que sobe o servidor e o túnel e mostra o link da sala;
+- abre o **app de mesa** ao lado, já dentro da sala, com o som por aplicativo.
 
-```
-  1) Hospedar a sala      link público, para convidar gente
-  2) Abrir o app de mesa  som por aplicativo, só nesta máquina
-  3) Os dois              link público e o app aberto aqui
-```
-
-A opção **3** é a do caso comum: você quer convidar gente pelo link **e** levar
-o som de um aplicativo. Funciona porque o app não sobe servidor próprio quando
-a porta já está ocupada — ele entra na sala que o túnel está publicando.
-
-Sem `cloudflared`, as opções **1** e **3** avisam e seguem em modo local, sem
-link público — e aí compartilhar tela exige usar `localhost`, porque o IP da
-LAN não fornece o HTTPS que a captura pede. A opção **2** não usa `cloudflared`
-para nada e nem menciona o assunto.
-
-No Linux e no macOS, fechar a janela do app encerra o túnel junto. No Windows a
-sala abre numa janela separada, porque o `.bat` não tem controle de tarefas.
-
-Sem ninguém para responder — chamado por pipe, ou por um gerenciador de
-arquivos sem terminal — ele não trava: segue em **1**.
+O terminal fica só ali, mostrando o link. **`Ctrl+C` nele encerra tudo** (app,
+servidor e túnel), e fechar a janela do app faz o mesmo: ninguém fica com link
+no ar. Se o túnel não subir, o PeekIn não abre em modo local; ele encerra e
+mostra o motivo, e o terminal espera um Enter para você conseguir ler.
 
 - **Windows:** dê duplo clique em `iniciar-windows.bat`.
 - **macOS:** dê duplo clique em `iniciar-macos.command`, na pasta do projeto.
-  O Terminal.app abre e inicia a sala. O script usa recursos do Bash 3.2 do
+  O Terminal.app abre, inicia a sala e abre o app. O script usa recursos do Bash 3.2 do
   sistema, sem depender de `readlink -f`.
 - **Linux (Ubuntu/Debian e Arch/CachyOS):** nas propriedades de
   `iniciar-linux.sh`, habilite a permissão de execução se necessário e use
@@ -146,7 +132,10 @@ Ao executar o script Linux sem terminal, ele procura `x-terminal-emulator`
 primeiro (preferência configurada no Debian/Ubuntu), depois o executável
 indicado por `TERMINAL` e então Konsole, GNOME Terminal, Xfce Terminal,
 Alacritty, Kitty, Foot ou XTerm. `TERMINAL` deve conter apenas o nome ou caminho
-do executável, sem argumentos. Não há arquivo `.desktop` neste projeto.
+do executável, sem argumentos. Para ter o PeekIn no menu de aplicativos, rode
+`bash iniciar-linux.sh --instalar-atalho` uma vez (gera
+`~/.local/share/applications/peekin.desktop` com o ícone de `assets/`);
+`--remover-atalho` desfaz.
 Mantenha os lançadores na pasta do projeto; se extrair um ZIP no macOS e perder
 a permissão de execução, habilite-a com `chmod +x iniciar-macos.command`.
 

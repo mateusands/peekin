@@ -18,6 +18,7 @@ Se uma mudança sua fizer o servidor tocar em áudio ou vídeo, ela está errada
 ```bash
 npm start            # servidor local em http://localhost:3000
 npm run hospedar     # servidor + túnel do Cloudflare, encerrados juntos
+npm run iniciar      # servidor + túnel + app de mesa — o que os lançadores rodam
 npm run app          # app de mesa (Electron): seletor próprio e som por aplicativo
 npm run check        # sintaxe de todos os módulos, inclusive desktop/
 npm run gerar-icones # regera public/js/icones.js (busca o Lucide na hora)
@@ -50,8 +51,8 @@ comando que interessa.
 | `desktop/som-pcm.cjs` | Windows: blocos de PCM dos nossos binários (macOS ainda não tem som) |
 | `desktop/nativo/win/` | captura do Windows: fonte C++ e os `.exe`; regere com `compilar-windows` |
 | `desktop/ponte.cjs` | ponte estreita entre a página e o processo principal |
-| `tools/hospedar.mjs` | sobe servidor + túnel e derruba os dois no `Ctrl+C` |
-| `iniciar-*.sh/.command/.bat` | lançadores: perguntam hospedar, app, ou os dois |
+| `tools/hospedar.mjs` | sobe servidor + túnel (e o app, com `--app`) e derruba tudo no `Ctrl+C` |
+| `iniciar-*.sh/.command/.bat` | lançadores: conferem Node, npm e cloudflared e rodam `npm run iniciar` |
 
 ## Invariantes — quebrar isso quebra o produto
 
@@ -137,7 +138,7 @@ a ferramenta que já usa. O que **precisa** ser verificado numa mudança:
 | começar a compartilhar | o som liga sozinho: tela inteira leva tudo, janela leva o som do dono dela |
 | som por aplicativo | pausar e voltar a tocar no app escolhido — o som volta sozinho, sem reescolher |
 | captura de tela no Linux | no Wayland quem pergunta é o portal; no X11 tem que aparecer o **nosso** seletor, e não compartilhar direto |
-| lançadores | as três opções despacham certo, e por pipe (sem terminal) não travam |
+| lançadores | terminal e app abrem juntos; `Ctrl+C` no terminal e fechar o app derrubam os dois, o servidor e o túnel; sem cloudflared param com mensagem; por pipe (sem terminal) não travam |
 
 Duas coisas que valem por qualquer automação:
 
@@ -304,6 +305,11 @@ E sem perda é literal: tom de referência a −30,1 dB, capturado a −30,1 dB.
 - **Teste de áudio toca no fone de quem está na máquina.** Se for gerar tom para
   medir, mande para um sink nulo — ou avise antes, e mate o processo ao fim de
   cada medição em vez de deixá-lo tocando entre um comando e outro.
+- **Terminal aberto de dentro do VS Code (ou de outro app Electron) herda
+  `ELECTRON_RUN_AS_NODE=1`.** Com ela o Electron sobe como Node puro e o
+  `main.cjs` morre em `app.commandLine`. O `hospedar.mjs --app` apaga a
+  variável antes de abrir o app; quem rodar `npx electron .` na mão precisa
+  fazer o mesmo.
 - **Lançador que pergunta precisa aguentar não ter ninguém.** Ele se re-executa
   dentro de um emulador de terminal e pode ser chamado por pipe; sem um
   `[[ -t 0 ]]` na frente do `read`, ele pendura para sempre.

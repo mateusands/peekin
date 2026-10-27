@@ -5,6 +5,38 @@ set -u
 
 arquivo_script="$(readlink -f -- "${BASH_SOURCE[0]}")"
 
+# Atalho no menu de aplicativos: bash iniciar-linux.sh --instalar-atalho
+# (ou --remover-atalho). O .desktop é gerado aqui, e não versionado, porque
+# Exec e Icon exigem caminho absoluto, que muda de máquina para máquina.
+case "${1:-}" in
+  --instalar-atalho|--remover-atalho)
+    raiz="$(dirname -- "$arquivo_script")"
+    destino="${XDG_DATA_HOME:-$HOME/.local/share}/applications/peekin.desktop"
+    if [[ "$1" == --remover-atalho ]]; then
+      rm -f "$destino"
+      printf 'Atalho removido.\n'
+    else
+      mkdir -p "$(dirname -- "$destino")"
+      # Terminal=false: o próprio script abre o terminal onde a sala roda
+      cat > "$destino" <<DESKTOP
+[Desktop Entry]
+Type=Application
+Name=PeekIn
+Comment=Chamada P2P de compartilhamento de tela, com ou sem som
+Exec="$arquivo_script"
+Icon=$raiz/assets/peekin-icon.png
+Path=$raiz
+Terminal=false
+Categories=Network;VideoConference;
+DESKTOP
+      chmod +x "$destino"
+      command -v update-desktop-database >/dev/null 2>&1 && update-desktop-database "$(dirname -- "$destino")" 2>/dev/null
+      printf 'Atalho criado: %s\n' "$destino"
+    fi
+    exit 0
+    ;;
+esac
+
 # Executado pelo gerenciador de arquivos, o script normalmente não recebe um
 # terminal. A alternativa Debian tem preferência; nas outras distribuições
 # procuramos um emulador instalado. A variável evita abrir uma segunda janela.
@@ -55,69 +87,17 @@ if [[ ! -d node_modules ]]; then
   npm install || falhar 'Não foi possível instalar as dependências.'
 fi
 
-# Só quem vai publicar precisa do túnel. Avisar antes do menu assustava quem ia
-# escolher só o app de mesa, que não usa cloudflared para nada.
-avisar_cloudflared() {
-  command -v cloudflared >/dev/null 2>&1 && return 0
-  printf '\ncloudflared não foi encontrado. A sala sobe em modo local, sem link público.\n'
-}
+# Sem túnel não há sala: o link público é o produto, então a falta do
+# cloudflared para aqui, com o caminho de instalação, em vez de subir local.
+command -v cloudflared >/dev/null 2>&1 || falhar 'cloudflared não foi encontrado. Instale com: sudo pacman -S cloudflared (Arch/CachyOS), ou o .deb de github.com/cloudflare/cloudflared/releases (Debian/Ubuntu).'
 
-# ---------- o que abrir ----------
-
-# Sem ninguém para responder (pipe, CI, gerenciador sem terminal), segue no modo
-# de sempre em vez de travar esperando uma tecla que não vem.
-modo=1
-if [[ -t 0 ]]; then
-  printf '\n  O que você quer fazer?\n\n'
-  printf '    1) Hospedar a sala      link público, para convidar gente\n'
-  printf '    2) Abrir o app de mesa  som por aplicativo, só nesta máquina\n'
-  printf '    3) Os dois              link público e o app aberto aqui\n\n'
-  while true; do
-    printf '  Escolha [1]: '
-    read -r modo || { modo=1; printf '\n'; break; }
-    modo="${modo:-1}"
-    [[ "$modo" =~ ^[123]$ ]] && break
-    printf '  Responda 1, 2 ou 3.\n'
-  done
-fi
-
-# O app só sobe servidor próprio se a porta estiver livre — é o que permite ele
-# conviver com o túnel. Esperar a porta antes de abrir evita os dois brigarem.
-esperar_porta() {
-  local i
-  # 10s: é o servidor local que esperamos, não o túnel — esse demora mais e o
-  # app não depende dele
-  for i in $(seq 1 50); do
-    node -e 'const s=require("net").connect(Number(process.env.PORT)||3000,"127.0.0.1");s.on("connect",()=>{s.end();process.exit(0)});s.on("error",()=>process.exit(1))' 2>/dev/null && return 0
-    sleep 0.2
-  done
-  return 1
-}
-
-case "$modo" in
-  2)
-    printf '\nAbrindo o app de mesa...\n\n'
-    npm run app
-    ;;
-  3)
-    avisar_cloudflared
-    printf '\nHospedando a sala e abrindo o app de mesa...\n\n'
-    npm run hospedar &
-    hospedar_pid=$!
-    esperar_porta || printf '\nO servidor demorou a subir; abrindo o app mesmo assim.\n'
-    npm run app
-    # fechar a janela do app encerra o túnel junto: ninguém fica com link no ar
-    kill "$hospedar_pid" 2>/dev/null || true
-    wait "$hospedar_pid" 2>/dev/null || true
-    ;;
-  *)
-    avisar_cloudflared
-    printf '\nIniciando a sala. O endereço disponível aparecerá abaixo.\n\n'
-    npm run hospedar
-    ;;
-esac
+# Este terminal fica aberto mostrando o link; o app de mesa abre ao lado.
+# Ctrl+C aqui, ou fechar o app, derruba app, servidor e túnel juntos.
+printf '\nIniciando o PeekIn...\n\n'
+npm run iniciar
 codigo=$?
-if [[ "$codigo" -ne 0 ]]; then
-  printf '\nNão foi possível iniciar.\n' >&2
-fi
+# Encerrar de propósito (Ctrl+C sai com 130) fecha a janela na hora; só um
+# erro segura o terminal, para dar tempo de ler a mensagem.
+[[ "$codigo" -eq 0 || "$codigo" -eq 130 ]] && exit 0
+printf '\nNão foi possível iniciar.\n' >&2
 esperar_saida "$codigo"

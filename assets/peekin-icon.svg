@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title>PeekIn</title>
+  <rect x="16" y="16" width="224" height="224" rx="56" fill="#0b0d10"/>
+  <rect x="28" y="28" width="200" height="200" rx="44" fill="#16213a"/>
+  <rect x="52" y="64" width="152" height="104" rx="16" fill="none" stroke="#4d80e8" stroke-width="14"/>
+  <path d="M104 196h48M128 172v24" fill="none" stroke="#4d80e8" stroke-linecap="round" stroke-width="14"/>
+  <path d="M78 116c14-20 30-30 50-30s36 10 50 30c-14 20-30 30-50 30s-36-10-50-30Z" fill="#e8eaee"/>
+  <circle cx="128" cy="116" r="17" fill="#3d6fd6"/>
+  <circle cx="134" cy="110" r="5" fill="#ffffff"/>
+</svg>

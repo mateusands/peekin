@@ -17,7 +17,7 @@ const RAIZ = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PORTA = Number(process.env.PORT) || 3000;
 const LIMITE_POR_SALA = Number(process.env.LIMITE_SALA) || 8;
 let urlPublica = null;
-let tunelPublico = process.env.TUNEL_PUBLICO === '1';
+const tunelPublico = process.env.TUNEL_PUBLICO === '1';
 
 const app = express();
 app.set('trust proxy', true);
@@ -62,11 +62,6 @@ app.get('/api/config', (req, res) => {
    A mensagem fica só entre os dois processos locais; ela não participa da
    sinalização e jamais carrega mídia. */
 process.on('message', mensagem => {
-  if (mensagem?.tipo === 'tunel-indisponivel') {
-    tunelPublico = false;
-    urlPublica = null;
-    return;
-  }
   if (mensagem?.tipo !== 'url-publica') return;
   try {
     const url = new URL(mensagem.url);
